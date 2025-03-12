@@ -1,0 +1,25 @@
+{
+    "manifest_version": 3,
+    "name": "NetSuite Mod",
+    "version": "1.0",
+    "description": "Modifies NetSuite to be less stupid.",
+    "permissions": [],
+    "host_permissions": [
+      "https://3604814.app.netsuite.com/*",
+      "https://zenquotes.io/api/*"
+    ],
+    "content_scripts": [
+      {
+        "matches": [
+          "https://3604814.app.netsuite.com/*"
+        ],
+        "js": ["content.js"]
+      }
+    ],
+    "icons": {
+      "128": "icon128.png"
+    },
+    "background": {
+      "service_worker": "background.js"
+    }
+  }
