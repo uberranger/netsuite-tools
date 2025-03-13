@@ -16,21 +16,13 @@
     const updateTimeLabel = async (timeContainer) => {
         // const res = await fetch("https://zenquotes.io/api/random");
         chrome.runtime.sendMessage({ action: "getQuote" }, response => {
-            if (response.quote) {
-                if (!response.quote.includes("Too many requests")) {
-                    const quoteHeading = document.createElement("h1");
-                    quoteHeading.textContent = "Inspirational Quote:"
-                    timeContainer.appendChild(quoteHeading);
-
-                    const inspoQuote = document.createElement("p");
-                    timeContainer.appendChild(inspoQuote);
-                    inspoQuote.textContent = `"${response.quote}"`;
-                    const inspoAuthor = document.createElement("p");
-                    timeContainer.appendChild(inspoAuthor);
-                    inspoAuthor.textContent = ` -${response.author}`;
-                }
+            if (response.text) {
+                    const fact = document.createElement("p");
+                    timeContainer.appendChild(fact);
+                    fact.id = "fact";
+                    fact.textContent = `${response.text}`;
             } else {
-              console.error(response.error);
+              console.error(response);
             }
           });
 
@@ -52,36 +44,34 @@
 
         while (timeContainer.firstChild) {timeContainer.removeChild(timeContainer.firstChild);}
 
-        const timeHeader = document.createElement("h1");
-        timeContainer.appendChild(timeHeader)
-        timeHeader.textContent = `${timeBilled} Billed Today`;
+        // const timeHeader = document.createElement("h1");
+        // timeContainer.appendChild(timeHeader)
+        // timeHeader.textContent = `${timeBilled} Billed Today`;
 
         const labelText = [
-            ["Billing Efficiency", timeBilled, timeElapsed, (timeBilled / (timeElapsed > 0 ? timeElapsed : 1))],
-            ["Daily Goal", timeBilled, 6, timeBilled / 6],
-            ["Weekly Goal", totalBilled, 30, totalBilled / 30],
+            ["Time", "Billed", "Goal", "Percentage"],
+            ["Efficiency", timeBilled, timeElapsed, (timeBilled / (timeElapsed > 0 ? timeElapsed : 1))],
+            ["Daily", timeBilled, 6, timeBilled / 6],
+            ["Weekly", totalBilled, 30, totalBilled / 30],
         ];
 
         for (const [title, current, goal, percent] of labelText) {
             const label = document.createElement("label");
             const titleP = document.createElement("p");
             const currentP = document.createElement("p");
-            const ofP = document.createElement("p");
             const goalP = document.createElement("p");
             const percentP = document.createElement("p");
 
             timeContainer.appendChild(label);
             label.appendChild(titleP);
             label.appendChild(currentP);
-            label.appendChild(ofP);
             label.appendChild(goalP);
             label.appendChild(percentP);
 
             titleP.textContent = title
             currentP.textContent = current;
-            ofP.textContent = "of";
             goalP.textContent = goal;
-            percentP.textContent = `${(percent * 100).toFixed(0)}%`;
+            percentP.textContent = isNaN(percent) ? percent : `${(percent * 100).toFixed(0)}%`;
         };
 
     }
@@ -161,8 +151,8 @@
                 transform: translate(-50%, 0);
                 zIndex: 9999;
                 padding: .5vmax;
-                background: rgba(0, 0, 0, .5);
-                backdrop-filter: blur(10px);
+                background: rgba(0, 0, 0, .75);
+                backdrop-filter: blur(2px);
                 outline: 1px solid dodgerblue;
                 color: white;
                 border: none;
@@ -173,10 +163,14 @@
 
             #modifiedTimeLabel > label {
                 display: grid;
-                grid-template-columns: 8fr 4fr 1fr 4fr 4fr;
+                grid-template-columns: repeat(4, 1fr);
                 gap: 1vmax;
                 justify-items: start;
                 width: 100%;
+                border-bottom: 1px solid white;
+            }
+            #fact {
+                margin-top: 1vmax;
             }
         `;
 
